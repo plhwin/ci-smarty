@@ -1,0 +1,19 @@
+.showmsg {width:785px;height:220px;background:url(../images/showmessage/bg_404.gif) no-repeat;margin:2em auto;}
+.showmsg .inner {padding:16px 20px;}
+.showmsg h3 {font-size:16px;font-weight:bold;margin:5px 0 0 10px;}
+.showmsg .s1 {font-size:14px;margin:8px 0 0 10px;}
+.showmsg .s2 {font-size:12px;font-weight:bold;border-top:1px solid #dcdbcb;margin-top:15px;padding:10px 0 0 10px;}
+.showmsg ol {margin:3px 0 0 10px;}
+.showmsg li {font-size:12px;list-style:decimal inside;line-height:1.6;}
+.showmsg a {text-decoration:underline;}
+
+.showmessage { margin: 50px auto; width: 700px; background: #F7F7F7; }
+.showmessage h2 {font-size: 14px; }
+.showmessage .ye_l_b {padding: 10px 20px 10px;}
+.showmessage p {padding:10px 15px 0; font-size: 14px; }
+.showmessage .op {font-size: 12px; text-align: right; }
+	
+.ye_r_t { width: 100%; background: url(../images/showmessage/yel_bg.gif) no-repeat right top; }
+.ye_l_t { padding: 10px 0 0; background: url(../images/showmessage/yel_bg.gif) no-repeat left top; }
+.ye_r_b { background: url(../images/showmessage/yel_bg.gif) no-repeat right bottom; }
+.ye_l_b { padding: 0 5px 5px; background: url(../images/showmessage/yel_bg.gif) no-repeat left bottom; }

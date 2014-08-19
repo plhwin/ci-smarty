@@ -1,0 +1,11 @@
+<{include file="../header.html"}>
+<{if $member.uid > 0}>
+<div>
+<span class='name'><{$member.nickname}></span>, 
+<a href="<{$siteurl}>/logout">退出</a>
+</div>
+<{else}>
+<a href="<{$siteurl}>/register">注册</a>
+<a href="<{$siteurl}>/login">登录</a>
+<{/if}>
+<{include file="../footer.html"}>

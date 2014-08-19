@@ -1,0 +1,164 @@
+<{include file="../header.html"}>
+<script language="JavaScript" src="<{$jsdir}>/common.js"></script>
+<script language="JavaScript" src="<{$jsdir}>/ajax.js"></script>
+
+<script type="text/javascript">
+var REG_FIELD_MESSAGE = {
+	'email'			: '请输入常用邮箱，用来登录学车季',
+	'password_once' : '6-20个字符，区分大小写'
+}
+
+
+function fieldFocus(fieldname){	
+	setHintmsg("info_"+fieldname, REG_FIELD_MESSAGE[fieldname]);
+}
+
+function fieldReset(fieldname){
+	changeStyle('div_'+fieldname, 'clearfix');
+	setWord('info_'+fieldname, '');
+}
+
+
+function fieldOk(fieldname){
+	changeStyle('div_'+fieldname, 'clearfix success');
+	
+	setWord('info_'+fieldname,'');
+	changeStyle('info_'+fieldname,'msgok');
+	
+	
+
+}
+
+
+function fieldError(fieldname, word){
+	changeStyle('div_'+fieldname, 'clearfix error');
+	setError('info_'+fieldname, word);
+
+}
+
+
+function fieldBlur(id) {
+	if(G(id)) {
+		var backColor = G(id).style.backgroundColor;
+		if(backColor == '#ffff99' || backColor == 'rgb(255, 255, 153)'){
+			G(id).style.backgroundColor='#ffffff';
+		}
+		if(G(id).value == ''){
+			fieldReset(id);
+			return;
+		}
+	}
+
+	switch (id) {
+		case 'email':checkEmail();break;
+		case 'password_once':checkPwdOnce();break;
+	}
+}
+
+function is_email(email){
+	//var regexp = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+	var regexp = /^[a-zA-Z0-9\_\-\.]+@([a-zA-Z0-9\-\.])*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+	return regexp.test(email);
+}
+
+function checkEmail(){
+	var email = $F('email');
+	if(email == '') {
+		fieldError('email','邮箱地址不能为空');
+	} else {
+		if($F('password_once') == email){
+			fieldError('email','为了您的帐户安全，请勿将密码设置和邮箱一致');
+		} else if(!is_email(email)){
+			fieldError('email','请输入正确的邮箱格式');
+		}else {
+			requestUri = 'email='+encodeURIComponent(email);
+			postajax(SITE_URL+"/register/checkemail", requestUri, 'callback_fieldcheck');
+		}
+	}
+}
+
+function checkPwdOnce(){
+	var pwd = $F('password_once');
+	var email = $F('email');
+	
+	
+	if(pwd == '') {
+		fieldError('password_once','密码不能为空');
+	} else if(pwd.length < 6 || pwd.length > 20) {
+		fieldError('password_once','密码的长度必须在6-20个字符之间');
+	} else if(pwd == $F('username')) {
+		fieldError('password_once','密码不能和会员名一致');
+	}  else if(email != "" && email == pwd) {
+		fieldError('password_once','为了您的帐户安全，请勿将密码设置和邮箱一致');
+	}  else {
+		fieldOk('password_once');
+	}
+}
+
+function callback_fieldcheck(requestStr){
+	var r = explode('_', requestStr);
+	var field = r[0];
+	var result = r[1];
+	if(result == 'success'){
+		fieldOk(field);
+	} else {
+		fieldError(field, result);
+	}
+}
+
+function reg_submit(){
+	G('regsubmitbtn').disabled = true;
+	return true;
+}	
+	
+</script>
+
+<div id='page'>
+    <div class='container'>
+        <div class="page-account-clean page-signup row">
+            <section class='span10'>
+                <form id="form-register" name="form-register" class="form-stacked" method="post" onsubmit="return reg_submit();">
+                    <p class="account-clean-alert-message error">
+                        &nbsp;
+                    </p>
+                    <fieldset>
+                        <input type="hidden" name="type" value="personal" />
+                        <div id="div_email" class="clearfix<{if $message.email.status=='ok'}> success<{elseif $message.email.status=='error'}> error<{/if}>">
+                            <label for="email">
+                                邮箱
+                            </label>
+                            <div class="input">
+                                <input class="xlarge" id="email" name="email" onFocus="fieldFocus(this.id);" onBlur="fieldBlur(this.id);" value="<{if isset($smarty.post.email)}><{$smarty.post.email}><{/if}>" size="30" type="text">
+								<span class="help-inline">
+									<span id="info_email" class="<{if $message.email.status=='ok'}>msgok<{elseif $message.email.status=='error'}>errormsg<{/if}>"><{$message.email.info}></span>
+								</span>
+                            </div>
+                        </div>
+                        <div id="div_password_once" class="clearfix<{if $message.password_once.status=='ok'}> success<{elseif $message.password_once.status=='error'}> error<{/if}>">
+                            <label for="password">
+                                密码
+                            </label>
+                            <div class="input">
+                                <input class="xlarge" id="password_once" name="password_once" onFocus="fieldFocus(this.id);" onBlur="fieldBlur(this.id);" value="<{if isset($smarty.post.password_once)}><{$smarty.post.password_once}><{/if}>" size="30" type="password">
+								<span class="help-inline">
+									<span id="info_password_once" class="<{if $message.password_once.status=='ok'}>msgok<{elseif $message.password_once.status=='error'}>errormsg<{/if}>"><{$message.password_once.info}></span>
+								</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="">
+                    	<input type="hidden" name="formhash" value="<{formhash()}>" />
+						<input type="hidden" name="registersubmit" value="1" />
+						<button type="submit" id="regsubmitbtn" class="btn primary large" >注 册</button>
+                    </div>
+                </form>
+            </section>
+            <aside class='span4'>
+                <p>
+                    &raquo;已有帐号？ <a href='<{$siteurl}>/login'>直接登录</a>
+                </p>
+            </aside>
+        </div>
+    </div>
+</div>
+<{include file="../footer.html"}>
